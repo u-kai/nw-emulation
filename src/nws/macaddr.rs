@@ -7,15 +7,18 @@ impl MacAddr {
         MacAddr(addr)
     }
     pub fn is_individual(&self) -> bool {
-        let head = self[0];
-        (head << 7) == 0
+        self.get_i_g_bit() == 0
     }
     pub fn is_group(&self) -> bool {
-        self[0] == 1
+        println!("{:b}", self.get_i_g_bit());
+        self.get_i_g_bit() == 1
     }
     pub fn is_global(&self) -> bool {
         //self[]
         true
+    }
+    fn get_i_g_bit(&self) -> u8 {
+        (self[0]) & 0b00000001
     }
 }
 impl Display for MacAddr {
@@ -38,6 +41,15 @@ impl Deref for MacAddr {
 mod mac_addr_test {
     use super::MacAddr;
 
+    #[test]
+    fn is_group_test() {
+        let mac = MacAddr::new([1, 1, 1, 1, 1, 1]);
+        assert!(mac.is_group());
+        let mac = MacAddr::new([255, 1, 1, 1, 1, 1]);
+        assert!(mac.is_group());
+        let mac = MacAddr::new([0, 1, 1, 1, 1, 1]);
+        assert!(!mac.is_group());
+    }
     #[test]
     fn is_individual_test() {
         let mac = MacAddr::new([0, 1, 1, 1, 1, 1]);
