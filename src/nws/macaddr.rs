@@ -15,11 +15,14 @@ impl MacAddr {
     pub fn is_global(&self) -> bool {
         self.get_u_l_bit() == 0
     }
+    pub fn is_local(&self) -> bool {
+        self.get_u_l_bit() == 0b10
+    }
     fn get_i_g_bit(&self) -> u8 {
-        (self[0]) & 0b00000001
+        self[0] & 0b00000001
     }
     fn get_u_l_bit(&self) -> u8 {
-        (self[0]) & 0b00000010
+        self[0] & 0b00000010
     }
 }
 impl Display for MacAddr {
@@ -42,6 +45,15 @@ impl Deref for MacAddr {
 mod mac_addr_test {
     use super::MacAddr;
 
+    #[test]
+    fn is_local_test() {
+        let mac = MacAddr::new([0b011111111, 1, 1, 1, 1, 1]);
+        assert!(mac.is_local());
+        let mac = MacAddr::new([0b011110011, 1, 1, 1, 1, 1]);
+        assert!(mac.is_local());
+        let mac = MacAddr::new([0, 1, 1, 1, 1, 1]);
+        assert!(!mac.is_local());
+    }
     #[test]
     fn is_grobal_test() {
         let mac = MacAddr::new([0, 1, 1, 1, 1, 1]);
