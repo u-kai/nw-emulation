@@ -4,10 +4,16 @@ pub struct EthernetFlame {
     preamble: Preamble,
     header: EtherHeader,
     payload: Vec<u8>,
-    fcs: [u8; 4],
+    fcs: Fcs,
 }
 impl EthernetFlame {
-    pub fn new(src_mac: MacAddr, dist_mac: MacAddr, e_type: EthType, payload: Vec<u8>) -> Self {
+    pub fn new(
+        src_mac: MacAddr,
+        dist_mac: MacAddr,
+        e_type: EthType,
+        payload: Vec<u8>,
+        fcs: Fcs,
+    ) -> Self {
         let mut payload = payload;
         let payload_len = payload.len();
         if payload_len > 1500 {
@@ -23,7 +29,7 @@ impl EthernetFlame {
             preamble: Preamble::new(),
             header: EtherHeader::new(src_mac, dist_mac, e_type),
             payload,
-            fcs: [0, 0, 0, 0],
+            fcs,
         }
     }
 }
@@ -42,6 +48,8 @@ impl EtherHeader {
         }
     }
 }
+#[derive(PartialEq, Eq, Debug, Clone)]
+pub struct Fcs([u8; 4]);
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 struct Preamble([u8; 8]);
@@ -89,7 +97,13 @@ fn eth_new_test() {
     pad.insert(0, 10);
 
     assert_eq!(
-        EthernetFlame::new(s_mac.clone(), d_mac.clone(), EthType::IPv4, vec![10, 10]),
-        EthernetFlame::new(s_mac, d_mac, EthType::IPv4, pad)
+        EthernetFlame::new(
+            s_mac.clone(),
+            d_mac.clone(),
+            EthType::IPv4,
+            vec![10, 10],
+            Fcs([0; 4])
+        ),
+        EthernetFlame::new(s_mac, d_mac, EthType::IPv4, pad, Fcs([0; 4]))
     )
 }
