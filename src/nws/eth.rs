@@ -2,10 +2,9 @@ use super::{macaddr::MacAddr, utils::traits::ToBytes};
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub struct EthernetFlame {
     preamble: Preamble,
-    src_mac: MacAddr,
-    dist_mac: MacAddr,
-    e_type: EthType,
+    header: EtherHeader,
     payload: Vec<u8>,
+    fcs: [u8; 4],
 }
 impl EthernetFlame {
     pub fn new(src_mac: MacAddr, dist_mac: MacAddr, e_type: EthType, payload: Vec<u8>) -> Self {
@@ -22,13 +21,28 @@ impl EthernetFlame {
         }
         EthernetFlame {
             preamble: Preamble::new(),
-            src_mac,
-            dist_mac,
-            e_type,
+            header: EtherHeader::new(src_mac, dist_mac, e_type),
             payload,
+            fcs: [0, 0, 0, 0],
         }
     }
 }
+#[derive(PartialEq, Eq, Debug, Clone)]
+struct EtherHeader {
+    src_mac: MacAddr,
+    dist_mac: MacAddr,
+    e_type: EthType,
+}
+impl EtherHeader {
+    fn new(src_mac: MacAddr, dist_mac: MacAddr, e_type: EthType) -> Self {
+        EtherHeader {
+            src_mac,
+            dist_mac,
+            e_type,
+        }
+    }
+}
+
 #[derive(PartialEq, Eq, Debug, Clone)]
 struct Preamble([u8; 8]);
 impl Preamble {
