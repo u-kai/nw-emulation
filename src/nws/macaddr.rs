@@ -10,15 +10,16 @@ impl MacAddr {
         self.get_i_g_bit() == 0
     }
     pub fn is_group(&self) -> bool {
-        println!("{:b}", self.get_i_g_bit());
         self.get_i_g_bit() == 1
     }
     pub fn is_global(&self) -> bool {
-        //self[]
-        true
+        self.get_u_l_bit() == 0
     }
     fn get_i_g_bit(&self) -> u8 {
         (self[0]) & 0b00000001
+    }
+    fn get_u_l_bit(&self) -> u8 {
+        (self[0]) & 0b00000010
     }
 }
 impl Display for MacAddr {
@@ -41,6 +42,15 @@ impl Deref for MacAddr {
 mod mac_addr_test {
     use super::MacAddr;
 
+    #[test]
+    fn is_grobal_test() {
+        let mac = MacAddr::new([0, 1, 1, 1, 1, 1]);
+        assert!(mac.is_global());
+        let mac = MacAddr::new([0b011111101, 1, 1, 1, 1, 1]);
+        assert!(mac.is_global());
+        let mac = MacAddr::new([0b011111111, 1, 1, 1, 1, 1]);
+        assert!(!mac.is_global());
+    }
     #[test]
     fn is_group_test() {
         let mac = MacAddr::new([1, 1, 1, 1, 1, 1]);
