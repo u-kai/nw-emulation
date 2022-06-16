@@ -1,6 +1,6 @@
 use std::{fmt::Display, ops::Deref};
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone, Hash)]
 pub struct MacAddr([u8; 6]);
 impl MacAddr {
     pub fn new(addr: [u8; 6]) -> Self {

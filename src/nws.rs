@@ -7,5 +7,6 @@ pub mod mac_address_table;
 pub mod macaddr;
 //pub mod node;
 //pub mod http_server;
+pub mod cidr;
 pub mod nic;
 pub mod utils;
