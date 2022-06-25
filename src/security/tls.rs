@@ -9,21 +9,21 @@ pub trait TlsClient {
     fn valid_data(&self, data: ValidateData) -> bool;
 }
 
-struct ValidateData;
-struct MasterSecret;
-struct DigitalSignature;
-struct PreMasterSecret;
+pub struct ValidateData;
+pub struct MasterSecret;
+pub struct DigitalSignature;
+pub struct PreMasterSecret;
 
-struct ClientCertificate {
+pub struct ClientCertificate {
     cert: String,
 }
-struct CryptoAlgorisumParameter {
+pub struct CryptoAlgorisumParameter {
     protocol_v: String,
     crypto_suite: CryptoSuite,
 }
-struct ClientRandom;
+pub struct ClientRandom;
 
-struct CryptoSuite {
+pub struct CryptoSuite {
     server_cert_algo: String,
     key_exchange_algo: String,
     messeage_crypto_algo: String,
@@ -39,8 +39,8 @@ pub trait TlsServer {
     fn change_cipher_spec(&mut self) -> ();
     fn finished(&self) -> ValidateData;
 }
-struct ServerRandom(u32);
+pub struct ServerRandom(u32);
 
-struct ServerCertificate {
+pub struct ServerCertificate {
     cert: String,
 }
