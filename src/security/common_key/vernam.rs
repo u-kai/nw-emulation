@@ -1,4 +1,4 @@
-use rand::{prelude::StdRng, thread_rng, Rng, RngCore, SeedableRng};
+use crate::security::gen_rand_bytes::gen_rand_bytes;
 
 pub struct Vernam {
     msg: Vec<u8>,
@@ -7,17 +7,10 @@ pub struct Vernam {
 
 impl Vernam {
     fn new(msg: &str) -> Self {
-        let mut thread = rand::thread_rng();
-        let seed = thread.gen::<[u8; 32]>();
         let msg = msg.bytes().map(|byte| byte).collect::<Vec<u8>>();
         let len = msg.len();
-        let mut rng: StdRng = SeedableRng::from_seed(seed);
-        let mut key_bytes = vec![0u8; len];
-        rng.fill_bytes(&mut key_bytes);
-        Vernam {
-            msg,
-            key: key_bytes,
-        }
+        let key = gen_rand_bytes(len);
+        Vernam { msg, key }
     }
     fn enc(&self) -> Vec<u8> {
         self.msg
