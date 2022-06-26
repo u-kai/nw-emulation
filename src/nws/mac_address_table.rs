@@ -16,6 +16,7 @@ impl MacAddressTable {
         self.table.clear();
     }
 }
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct L2Port(String);
 impl L2Port {
     pub fn new() -> Self {
