@@ -1,4 +1,4 @@
-use std::{fmt::Display, u32::MAX};
+use std::fmt::Display;
 
 use super::ipv4::IpAddrv4;
 
@@ -77,6 +77,7 @@ impl Display for CIDR {
     }
 }
 
+#[cfg(test)]
 mod cidr_test {
     use super::CIDR;
     use crate::nws::ipv4::IpAddrv4;
@@ -86,5 +87,19 @@ mod cidr_test {
         let ipv4 = IpAddrv4::new([192, 168, 1, 2]);
         let cidr = CIDR::new(ipv4, 16);
         assert_eq!(cidr.cidr_str(), "192.168.0.0/16");
+        let ipv4 = IpAddrv4::new([192, 168, 1, 2]);
+        let cidr = CIDR::new(ipv4, 24);
+        assert_eq!(cidr.cidr_str(), "192.168.1.0/24");
+    }
+    #[test]
+    fn is_local_test() {
+        let ipv4 = IpAddrv4::new([192, 168, 1, 2]);
+        let cidr = CIDR::new(ipv4, 16);
+        let local_ipv4 = IpAddrv4::new([192, 168, 3, 4]);
+        assert!(cidr.is_local(local_ipv4));
+        let ipv4 = IpAddrv4::new([192, 168, 1, 2]);
+        let cidr = CIDR::new(ipv4, 24);
+        let local_ipv4 = IpAddrv4::new([192, 168, 3, 4]);
+        assert!(!cidr.is_local(local_ipv4));
     }
 }
